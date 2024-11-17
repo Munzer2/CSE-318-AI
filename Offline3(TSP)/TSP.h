@@ -11,6 +11,7 @@ public:
     vector<vector< double >> dist; 
     ll sz;  
     TSP(string &filepath) {
+        srand(time(nullptr));
         parsePath(filepath);
         sz = points.size(); 
         dist.resize(sz, vector< double >(sz, 0)); 
@@ -55,6 +56,27 @@ public:
         double x1 = points[i].first,x2 = points[j].first,y1 = points[i].second,y2 = points[j].second;   
         double dist = sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
         return dist; 
+    }
+
+
+    pair< double, vector< ll >> semi_greedy_Nearest_neighbors() {
+        ll curr = 0;
+        vector< ll > tour;
+        vector< ll > vis(sz, 0);
+        tour.pb(curr);
+        vis[curr] = 1;
+        for(ll i = 1; i < sz; ++i) {
+            vector< pair< double, ll >> _dist;
+            for(ll j = 0; j < sz; ++j) {
+                if(!vis[j]) _dist.push_back({dist[curr][j],j}); 
+            }
+            sort(_dist.begin(), _dist.end());
+            ll ind = (_dist.size() >= 3  ? rand()%3 : rand()%_dist.size()); 
+            curr = _dist[ind].second; 
+            tour.pb(curr);
+            vis[curr] = 1;
+        }
+        return {TourLen(tour),tour}; 
     }
 
     pair< double, vector< ll >> Nearest_neighbors() {

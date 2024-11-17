@@ -32,12 +32,12 @@ ll checkTSP(string &filename) {
 }
 
 int main() {
-    // cout << "hello world\n"; 
+    // cout << "hello munzer\n"; 
     // string path = "TSP_assignment_task_benchmark_data\\a280.tsp"; 
     // TSP tsp(path); 
-    // pair< double , vector<ll >> p1 = tsp.Nearest_neighbors();  
-    // double _final = tsp.threeOpt(p1.sc);
-    // cout << p1.fs << " " << _final << "\n"; 
+    // pair< double , vector<ll >> p1 = tsp.semi_greedy_Nearest_neighbors();  
+    // // double _final = tsp.twoOpt(p1.sc);
+    // cout << p1.fs <<"\n"; 
 
     string folder_path = "TSP_assignment_task_benchmark_data";
     vector< string > tsp_files;
@@ -53,28 +53,20 @@ int main() {
 
         if (file_name == "." || file_name == "..") continue;
 
-        // Check if the file is a `.tsp` file
         if (checkTSP(file_name)) {
             string file_path = folder_path + "/" + file_name;
             tsp_files.push_back(file_path);
         }
     }
     closedir(dir);
-    vector< Construct > Constructs = {&TSP::Nearest_neighbors, &TSP::Nearest_insertion, &TSP::cheapest_insertion};
-    vector< string > ConstructNames = {"Nearest Neighbors", "Nearest Insertion", "Cheapest Insertion"};
+    vector< Construct > Constructs = {&TSP::Nearest_neighbors, &TSP::Nearest_insertion, &TSP::cheapest_insertion, &TSP::semi_greedy_Nearest_neighbors};
+    vector< string > ConstructNames = {"Nearest Neighbors", "Nearest Insertion", "Cheapest Insertion", "Semi greedy nearest neighbors"};
 
     vector< Perturbation > perturbs = {&TSP::twoOpt,&TSP::nodeswap,&TSP::nodeshift};
     vector< string > perturbNames = {"twoOpt","nodeswap","nodeshift"};
 
-    // string path = "TSP_assignment_task_benchmark_data\\kroE100.tsp";
-    // TSP tsp(path); 
-
     
-
-    // for(ll i = 0 ; i < ConstructNames.size(); ++i) {
-    //     pair< double, vector< ll >> ans = (tsp.*Constructs[i])();
-    //     cout << "using : " << ConstructNames[i] << " and found: " << ans.fs << "\n"; 
-    // }
+    map< string, ll > mp;
 
     for(auto path : tsp_files) {
         TSP tsp(path);
@@ -93,8 +85,10 @@ int main() {
         }
         cout << "\n"; 
         cout << ConstructNames[best_i] << " and " << perturbNames[best_j] << " wins\n";
+        mp[perturbNames[best_j]]++;
         cout << "-----------------------------------------------------------------------------------------------\n\n";
     }
+
     
     return 0;
 }
